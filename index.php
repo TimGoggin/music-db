@@ -38,13 +38,25 @@
     <h2>Registration</h2>
 
     <form class="centered" action="html_sample_2.html">
-        <input class="form-elements" type="text" value="username">
+        <input class="form-elements" type="text" value="Username">
         <br>
-        <input class="form-elements" type="email" value="password">
+        <input class="form-elements" type="email" value="Password">
         <br>
         <input type="hidden" name="hidden-field" value="pass-in-cookie-value-here">
         <input class="form-elements" type="submit" value="Register">
     </form>
+
+    <h2>Retrieve songs by username</h2>
+
+    <form class="centered" action="html_sample_2.html">
+        <input class="form-elements" type="text" value="Username">
+        <br>
+        <input type="hidden" name="hidden-field" value="pass-in-cookie-value-here">
+        <input class="form-elements" type="submit" value="Retrieve">
+    </form>
+
+    <br>
+    <br>
     <br>
         <?php
             $servername = "localhost";
