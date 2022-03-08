@@ -30,28 +30,28 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        if(isset($_REQUEST["submit"])){
-        // Variables for the output and the web form below.
-        $ratings_out = "";
-        $s_user = $_REQUEST['username'];
+        if(isset($_REQUEST["submit"])) {
+            // Variables for the output and the web form below.
+            $ratings_out = "";
+            $s_user = $_REQUEST['username'];
 
-        // Check that the user entered data in the form.
-        if(!empty($s_user)){
-            // If so, prepare SQL query with the data.
-            $sql_query = "SELECT * FROM ratings WHERE username = ('$s_user')";
-            // Send the query and obtain the result.
-            // mysqli_query performs a query against the database.
-            $result = mysqli_query($conn, $sql_query);
-            $curr = '';
-            while ($row =  mysqli_fetch_array($result)) {
-                $curr .= $row['song'] . " -> " . $row['rating'] . '<br>';
+            // Check that the user entered data in the form.
+            if(!empty($s_user)){
+                // If so, prepare SQL query with the data.
+                $sql_query = "SELECT * FROM ratings WHERE username = ('$s_user')";
+                // Send the query and obtain the result.
+                // mysqli_query performs a query against the database.
+                $result = mysqli_query($conn, $sql_query);
+                $curr = '';
+                while ($row =  mysqli_fetch_array($result)) {
+                    $curr .= $row['song'] . " -> " . $row['rating'] . '<br>';
+                }
+                $ratings_out = $curr;
             }
-            $ratings_out = $curr;
+            else {
+            $ratings_out = "Please enter a username.";
+            }
         }
-        else {
-          $ratings_out = "Please enter a username.";
-        }
-      }
 
         $conn->close();
     ?>

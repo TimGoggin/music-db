@@ -30,28 +30,37 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        if(isset($_REQUEST["submit"])){
-        // Variables for the output and the web form below.
-        $ratings_out = "";
-        $s_user = $_REQUEST['username'];
+        if(isset($_REQUEST["register"])){
+            // Variables for the output and the web form below.
+            $issue = "";
+            $user_status = "";
+            $username = $_REQUEST['username'];
+            $password = $_REQUEST['password'];
 
-        // Check that the user entered data in the form.
-        if(!empty($s_user)){
-            // If so, prepare SQL query with the data.
-            $sql_query = "SELECT * FROM ratings WHERE username = ('$s_user')";
-            // Send the query and obtain the result.
-            // mysqli_query performs a query against the database.
-            $result = mysqli_query($conn, $sql_query);
-            $curr = '';
-            while ($row =  mysqli_fetch_array($result)) {
-                $curr .= $row['song'] . " -> " . $row['rating'] . '<br>';
+            // Check that the user entered data in the form.
+
+            if(empty($username)) {
+                $issue .= "Please enter a username. <br>";
             }
-            $ratings_out = $curr;
+            else {
+                // If so, prepare SQL query with the data.
+                $sql_query = "SELECT * FROM ratings WHERE username = ('$username')";
+                // Send the query and obtain the result.
+                // mysqli_query performs a query against the database.
+                $result = mysqli_query($conn, $sql_query);
+                $user =  mysqli_fetch_array($result);
+
+                if ($user) {
+                    if ($user['username'] === $username) {
+                        $user_status .= "This username already exists! <br>";
+                    }
+                }
+            }
+
+            if(empty($password)) {
+                $issue .= "Please enter a password. <br>";
+            }
         }
-        else {
-          $ratings_out = "Please enter a username.";
-        }
-      }
 
         $conn->close();
     ?>
@@ -61,14 +70,7 @@
     <form method="GET" action="">
     <input type="text" name="username" placeholder="Username" /><br>
     <input type="text" name="password" placeholder="Password" /><br>
-    <input type="submit" name="submit" value="Register"/>
-    </form>
-
-    <h2>Retrieve songs by username</h2>
-
-    <form method="GET" action="">
-    Username: <input type="text" name="username" placeholder="Enter Username" /><br>
-    <input type="submit" name="submit" value="Retrieve"/>
+    <input type="submit" name="register" value="Register"/>
     </form>
 
     <!-- 
@@ -76,8 +78,11 @@
         If so, print to the screen.
     -->
     <p><?php 
-        if(!empty($ratings_out)){
-        echo $ratings_out;
+        if(!empty($issue)){
+            echo $issue;
+        }
+        if(!empty($user_status)){
+            echo $user_status;
         }
     ?></p>
     </form>
