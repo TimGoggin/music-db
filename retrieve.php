@@ -1,16 +1,4 @@
 <!-- 
-<<<<<<< HEAD
-=======
-  COMP 333: Software Engineering
-  Sebastian Zimmeck (szimmeck@wesleyan.edu) 
-
-  PHP sample script for connecting to a database with SQL. This script can be run 
-  from inside the htdocs directory in XAMPP. Based on
-  https://www.w3schools.com/php/php_mysql_connect.asp
--->
-
-<!-- 
->>>>>>> c7ffeb4256e6429c32de4c4fb3d90f005cde317f
     COMP 333: Software Engineering
     Nathan Hausspiegel
 -->
@@ -23,17 +11,8 @@
 
     <meta charset="utf-8">
 
-<<<<<<< HEAD
     <title>music-db</title>
     <h1>music-db</h1>
-=======
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-
-    <title>music-db</title>
-
-    <link rel="stylesheet" href="style_sample.css">
->>>>>>> c7ffeb4256e6429c32de4c4fb3d90f005cde317f
 
 </head>
  
@@ -77,21 +56,6 @@
         $conn->close();
     ?>
 
-<<<<<<< HEAD
-=======
-    <div class="page">
-
-    <header><h1>music-db</h1></header>
-
->>>>>>> c7ffeb4256e6429c32de4c4fb3d90f005cde317f
-    <h2>Registration</h2>
-
-    <form method="GET" action="">
-    <input type="text" name="username" placeholder="Username" /><br>
-    <input type="text" name="password" placeholder="Password" /><br>
-    <input type="submit" name="submit" value="Register"/>
-    </form>
-
     <h2>Retrieve songs by username</h2>
 
     <form method="GET" action="">
@@ -109,11 +73,9 @@
         }
     ?></p>
     </form>
-<<<<<<< HEAD
+
+    <br>
+    <a href="index.html">Home</a>
 </body>
 
 </html>
-=======
-    </body>
-</html>
->>>>>>> c7ffeb4256e6429c32de4c4fb3d90f005cde317f
