@@ -13,7 +13,7 @@ class Artist(models.Model):
     def __str__(self):
         return self.song + ", by: " + self.artist
 
-class Ratings(models.Model):
+class Rating(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     song = models.ForeignKey(Artist, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MaxValueValidator(5)])
