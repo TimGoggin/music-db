@@ -42,23 +42,31 @@
             if(empty($username)) {
                 $issue .= "Please enter a username. <br>";
             }
-            else {
+
+            if(empty($password)) {
+                $issue .= "Please enter a password. <br>";
+            }
+
+            if(empty($issue)) {
                 // If so, prepare SQL query with the data.
-                $sql_query = "SELECT * FROM ratings WHERE username = ('$username')";
+                $user_query = "SELECT * FROM ratings WHERE username = ('$username')";
                 // Send the query and obtain the result.
                 // mysqli_query performs a query against the database.
-                $result = mysqli_query($conn, $sql_query);
-                $user =  mysqli_fetch_array($result);
+                $result = mysqli_query($conn, $user_query);
+                $user =  mysqli_fetch_assoc($result);
 
                 if ($user) {
                     if ($user['username'] === $username) {
                         $user_status .= "This username already exists! <br>";
                     }
                 }
-            }
-
-            if(empty($password)) {
-                $issue .= "Please enter a password. <br>";
+                
+                if(empty($user_status)) {
+                    $register_query = "INSERT INTO users (Username, Password) 
+                                       VALUES('$username', '$password')";
+                    $result = mysqli_query($conn, $register_query);
+                    $user_status .= "Successfully registered! <br>";
+                }
             }
         }
 

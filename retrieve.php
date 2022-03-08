@@ -49,7 +49,7 @@
                 $ratings_out = $curr;
             }
             else {
-            $ratings_out = "Please enter a username.";
+                $ratings_out = "Please enter a username.";
             }
         }
 
