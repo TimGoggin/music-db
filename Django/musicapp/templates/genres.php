@@ -10,7 +10,7 @@
 <head>
 
     <meta charset="utf-8">
-
+    <link rel="stylesheet" href="style.css">
     <title>music-db</title>
     <h1>music-db</h1>
 
