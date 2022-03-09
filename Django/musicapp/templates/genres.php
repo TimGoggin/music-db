@@ -13,29 +13,32 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'musicapp/style.css' %}">
     <title>music-db</title>
-    <h1>music-db</h1>
 
 </head>
  
 <body>
-    <h2>Retrieve song count by primary genre</h2>
+    <div class="content">
+        <h1>music-db</h1>
 
-    <form method="GET">
-    {% csrf_token %}
-    Primary Genre {{form.primary_genre}} <br>
-    <input type="submit" name="submit" value="Submit"/>
-    </form>
+        <h2>Retrieve song count by primary genre</h2>
 
-    <!-- 
-        Make sure that there is a value available for $ratings_out.
-        If so, print to the screen.
-    -->
-    <p>{{ auxtext }}<br>
-    </p>
-    </form>
+        <form method="GET">
+        {% csrf_token %}
+        Primary Genre {{form.primary_genre}} <br>
+        <input type="submit" name="submit" value="Submit"/>
+        </form>
 
-    <br>
-    <a href="{% url 'index' %}">Home</a>
+        <!-- 
+            Make sure that there is a value available for $ratings_out.
+            If so, print to the screen.
+        -->
+        <p>{{ auxtext }}<br>
+        </p>
+        </form>
+
+        <br>
+        <a href="{% url 'index' %}">Home</a>
+    </div>
 </body>
 
 </html>
