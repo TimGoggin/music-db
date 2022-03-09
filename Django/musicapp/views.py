@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import User, Artist, Rating
-from .forms import RegisterForm, RetrieveForm
+from .forms import RegisterForm, RetrieveForm, GenreForm
 
 
 # Create your views here.
@@ -47,3 +47,20 @@ def retrieve(request):
     
     context = {'form':form, 'ratings':Rating.objects.none(), 'auxtext':""}
     return render(request, "retrieve.php", context)
+
+def genres(request):
+    if request.method == 'GET':
+        form = GenreForm(request.GET)
+
+        if form.is_valid():
+            u = Artist.objects.filter(genre__sub_genre=request.GET['primary_genre'])
+            if(len(u) == 0):
+                context = {'form':form, 'ratings':Artist.objects.none(), 'auxtext':"No songs with that genre!"}
+            else:
+                context = {'form':form, 'ratings':u, 'auxtext':"Number of songs with genre " + request.GET['primary_genre'] + ": " + str(len(u))}
+            return render(request, "genres.php", context)
+    else:
+        form = GenreForm()
+    
+    context = {'form':form, 'ratings':Artist.objects.none(), 'auxtext':""}
+    return render(request, "genres.php", context)

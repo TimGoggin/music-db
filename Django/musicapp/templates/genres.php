@@ -17,20 +17,22 @@
 </head>
  
 <body>
-    <h2>Registration</h2>
+    <h2>Retrieve song count by primary genre</h2>
 
-    <form method="POST">
+    <form method="GET">
     {% csrf_token %}
-    {{ form.username.label }} {{ form.username }}<br>
-    {{ form.password.label }} {{ form.password }}<br>
-    <input type="submit" name="register" value="Register"/>
+    Primary Genre {{form.primary_genre}} <br>
+    <input type="submit" name="submit" value="Submit"/>
     </form>
 
     <!-- 
         Make sure that there is a value available for $ratings_out.
         If so, print to the screen.
     -->
-    <p>{{submittext}}</p>
+    <p>{{ auxtext }}<br>
+    </p>
+    </form>
+
     <br>
     <a href="{% url 'index' %}">Home</a>
 </body>

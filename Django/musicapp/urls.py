@@ -20,4 +20,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('register/', views.register, name='register'),
     path('retrieve/', views.retrieve, name='retrieve'),
+    path('genres/', views.genres, name='genres'),
 ]
