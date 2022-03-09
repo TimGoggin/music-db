@@ -5,7 +5,8 @@
 <head>
 
     <meta charset="utf-8">
-    <link rel="stylesheet" href="style.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'musicapp/style.css' %}">
 
     <title>music-db</title>
 
