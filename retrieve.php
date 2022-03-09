@@ -10,9 +10,9 @@
 <head>
 
     <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
 
     <title>music-db</title>
-    <h1>music-db</h1>
 
 </head>
  
@@ -56,26 +56,28 @@
         $conn->close();
     ?>
 
-    <h2>Retrieve songs by username</h2>
+    <div class="content">
 
-    <form method="GET" action="">
-    Username: <input type="text" name="username" placeholder="Enter Username" /><br>
-    <input type="submit" name="submit" value="Retrieve"/>
-    </form>
+        <h1>music-db</h1>
 
-    <!-- 
-        Make sure that there is a value available for $ratings_out.
-        If so, print to the screen.
-    -->
-    <p><?php 
-        if(!empty($ratings_out)){
-        echo $ratings_out;
-        }
-    ?></p>
-    </form>
+        <h2>Retrieve songs by username</h2>
 
-    <br>
-    <a href="index.html">Home</a>
+        <form method="GET" action="">
+        Username: <input type="text" name="username" placeholder="Enter Username" /><br>
+        <input type="submit" name="submit" value="Retrieve"/>
+        </form>
+
+        <p><?php 
+            if(!empty($ratings_out)){
+            echo $ratings_out;
+            }
+        ?></p>
+        </form>
+
+        <br>
+        <a href="index.html">Home</a>
+
+    </div>
 </body>
 
 </html>

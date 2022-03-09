@@ -10,9 +10,9 @@
 <head>
 
     <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
 
     <title>music-db</title>
-    <h1>music-db</h1>
 
 </head>
  
@@ -73,30 +73,33 @@
         $conn->close();
     ?>
 
-    <h2>Registration</h2>
+    <div class="content">
 
-    <form method="GET" action="">
-    <input type="text" name="username" placeholder="Username" /><br>
-    <input type="text" name="password" placeholder="Password" /><br>
-    <input type="submit" name="register" value="Register"/>
-    </form>
+        <h1>music-db</h1>
 
-    <!-- 
-        Make sure that there is a value available for $ratings_out.
-        If so, print to the screen.
-    -->
-    <p><?php 
-        if(!empty($issue)){
-            echo $issue;
-        }
-        if(!empty($user_status)){
-            echo $user_status;
-        }
-    ?></p>
-    </form>
+        <h2>Registration</h2>
 
-    <br>
-    <a href="index.html">Home</a>
+        <form method="GET" action="">
+        <input type="text" name="username" placeholder="Username" /><br>
+        <input type="text" name="password" placeholder="Password" /><br>
+        <input type="submit" name="register" value="Register"/>
+        </form>
+
+        <p><?php 
+            if(!empty($issue)){
+                echo $issue;
+            }
+            if(!empty($user_status)){
+                echo $user_status;
+            }
+        ?></p>
+        </form>
+
+        <br>
+        <a href="index.html">Home</a>
+
+    </div>
+    
 </body>
 
 </html>
