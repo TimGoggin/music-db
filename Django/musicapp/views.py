@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import User, Artist, Rating
-from .forms import RegisterForm
+from .forms import RegisterForm, RetrieveForm
 
 
 # Create your views here.
@@ -31,16 +31,19 @@ def register(request):
     return render(request, "register.php",{'form':form})
 
 def retrieve(request):
-    return render(request, "retrieve.php")
+    if request.method == 'GET':
+        form = RetrieveForm(request.GET)
 
-def results(request):
-    string = ""
-    try:
-        u = User.objects.get(pk=request.GET['username'])
-    except User.DoesNotExist:
-        string = "User not found in database!"
-        return HttpResponse(string)
+        if form.is_valid():
+            try:
+                u = User.objects.get(pk=request.GET['username'])
+            except:
+                context = {'form':form, 'ratings':Rating.objects.none(), 'auxtext':"Not a valid user!"}
+            else:
+                context = {'form':form, 'ratings':Rating.objects.filter(username=u), 'auxtext':""}
+            return render(request, "retrieve.php", context)
     else:
-        ratings = Rating.objects.filter(username=u)
-        context = {'username':request.GET['username'], 'ratings':ratings}
-        return render(request, "results.html", context)
+        form = RetrieveForm()
+    
+    context = {'form':form, 'ratings':Rating.objects.none(), 'auxtext':""}
+    return render(request, "retrieve.php", context)
