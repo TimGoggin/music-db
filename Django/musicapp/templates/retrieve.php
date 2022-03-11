@@ -26,7 +26,7 @@
     
         <form method="GET">
         {% csrf_token %}
-        {{form.username.label}} {{form.username}} <br>
+        {{form.username.label}} {{form.username}} <br><br>
         <input type="submit" name="submit" value="Retrieve"/>
         </form>
     

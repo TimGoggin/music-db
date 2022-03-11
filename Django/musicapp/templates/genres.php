@@ -24,7 +24,7 @@
 
         <form method="GET">
         {% csrf_token %}
-        Primary Genre {{form.primary_genre}} <br>
+        Primary Genre {{form.primary_genre}} <br><br>
         <input type="submit" name="submit" value="Submit"/>
         </form>
 

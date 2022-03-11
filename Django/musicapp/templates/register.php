@@ -25,7 +25,7 @@
         <form method="POST">
         {% csrf_token %}
         {{ form.username.label }} {{ form.username }}<br>
-        {{ form.password.label }} {{ form.password }}<br>
+        {{ form.password.label }} {{ form.password }}<br><br>
         <input type="submit" name="register" value="Register"/>
         </form>
 
