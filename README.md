@@ -77,3 +77,10 @@ ALTER TABLE `ratings`
   ADD CONSTRAINT `username_constraint` FOREIGN KEY (`username`) REFERENCES `users` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
+
+
+
+
+
+
+Work on this assignment was evenly distributed.
