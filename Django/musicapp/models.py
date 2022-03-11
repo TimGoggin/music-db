@@ -16,6 +16,7 @@ class Genre(models.Model):
 class Artist(models.Model):
     song = models.CharField(max_length=255, primary_key=True)
     artist = models.CharField(max_length=255)
+    album = models.CharField(max_length=255, default="")
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE, default=DEFAULT_GENRE_ID)
     year = models.IntegerField(default=1970)
     def __str__(self):
