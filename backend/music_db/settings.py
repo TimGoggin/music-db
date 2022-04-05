@@ -43,14 +43,18 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+<<<<<<< HEAD:backend/music_db/settings.py
     'corsheaders.middleware.CorsMiddleware',
+=======
+    'corsheaders.middleware.CorsMiddleware',    # Add the Corsheaders middleware exactly here.
+>>>>>>> bc846a411aedbfd3a57c186e2ba64d2c297f238b:Django/music_db/settings.py
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'djangoMIDDLEWA.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'music_db.urls'
