@@ -10,7 +10,7 @@ class User(models.Model):
         return self.username
 
 class Artist(models.Model):
-    song = models.CharField(max_length=255, primary_key=True)
+    song = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
     def __str__(self):
         return self.song + ", by: " + self.artist
