@@ -1,6 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
 
+import React from 'react';
+import song_lookup from './components/song_lookup';
+
 function App() {
   return (
     <div className="App">
@@ -17,9 +20,13 @@ function App() {
         >
           Learn React
         </a>
+        song_lookup
       </header>
     </div>
   );
+
 }
+
+
 
 export default App;
