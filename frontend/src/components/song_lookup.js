@@ -13,101 +13,94 @@ import {
 } from "reactstrap";
 
 import axios from "axios"
+import Song from "./Song"
+import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers";
 
-
-export default class song_lookup extends React.Component {
-  // The constructor function will be called when the component gets initialized.
-  // It is also the place where you initialize the component's properties,
-  // aka props (that is, function arguments in React-speak).
+export default class Song_lookup extends React.Component {
   constructor(props) {
-    // `super()` allows us to inherit from the parent component's constructor.
-    // That will allow our component to access all built-in React functions, etc.
     super(props);
-    // React components have a built-in `state` object. The `state` object is where
-    // you store property values that belong to the component. When the state object
-    // changes, the component re-renders.
-    // The state object is initialized in the constructor.
-    // It can contain as many properties as you like.
-    // Here we define one property called activeItem.
-    // 'this' refers to the currently instantiated CustomModal.
     this.state = {
       songList : [],
+      ratingList: [],
+      currentSong: 0,
+      currentUser: null,
+      active: false
     };
+    this.changeEditMode = this.changeEditMode.bind(this)
   }
 
-  // Whenver we enter changes into our form, e.g., for the title of our task,
-  // we want the change to be immedi/ately detected. This is what happens when
-  // the handleChange function is called below with onChange={this.handleChange}.
-  // handleChange takes an event argument, i.e., a change in title, descripton,
-  // or checkbox.
-  handleChange = (event) => {
-    // An event has a target, and event.target gives us the event's DOM element, e.g., see further below
-    // <input name="description" placeholder="Enter Todo description" type="text" class="form-control" value="My Task">.
-    // To refer to the description we assign the variable name = "description" and value = "My Task".
-    let {name} = event.target;
-    if (event.target.type === "text") {
-      name = event.target;
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  changeEditMode(id, on) {
+    if(on) {
+      this.setState({currentSong: id, active: true})
     }
-  
-//define res   
+    else {
+      this.setState({active: false})
+    }
+  }
 
-// use axios to retrieve songs
-axios
-    .get("http://localhost:8000/api/ratings")
-    .then((res) => this.setState({ songList: res.data }))
-    .catch((err) => console.log(err));
+  renderSongs() {
+    return Object.entries(this.state.songList).map(([key, value]) =>
+      <Song id={key} song={value.song} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
+    )
+  }
 
+  calculateAverageRating = (u) => {
+    let average = 0
+    let count = 0
+    this.state.ratingList.map((rating) =>{
+      if (u == rating.song) {
+        count++
+        average += rating.rating
+      }
+    })
+    return [average/count, count]
+  }
+
+  populateSongs = (artists) => {
+      axios
+      .get("http://localhost:8000/api/ratings/")
+      .then((res) => {
+        this.setState({ ratingList: res.data})
+        let newlist = []
+        for (const[key, value] of Object.entries(artists)) {
+            let figures = this.calculateAverageRating(key)
+            newlist[key] = {song: value.song, artist: value.artist, av: figures[0], count: figures[1]}
+        }
+
+        this.setState({ songList: newlist })
+      })
+      .catch((err) => console.log(err));
+  }
+
+  refreshList = () => {
+    // We are using the axios library for making HTTP requests.
+    // Here is a GET request to our api/todos path.
+    // If it succeeds, we set the todoList to the resolved data.
+    // Otherwise, we catch the error and print it to the console (rejected data).
+    // We are using async calls here. Please refer to the JavaScript
+    // tutorial for how they work.
+    axios
+      .get("http://localhost:8000/api/artists/")
+      .then((res) => {
+        let artistList = []
+        res.data.map((songItem) => artistList[songItem.id] = {song: songItem.song, artist: songItem.artist})
+        this.populateSongs(artistList)
+      })
   };
-  // The `render()` method is the only required method in a class component.
-  // When called, it will render the page. You do not have to specifically
-  // call render() in your component. Rather, the stub code with the
-  // ReactDOM.render(...) in your index.js will do that for you.
-  // The following will render the modal for adding or editing a task.
-  render() {                                                                //first, use formgroup to handle change, second output values from state (this.state.songlist)
-    // The modal has three properties: toggle, onSave, and activeItem.
-    // We have already defined activeItem above.
-    // See App.js on how toggle, onSave, and activeItem are being used.
-    const { toggle, onSave } = this.props;
-    return (
-      // isOpen={true} is a Boolean describing if the modal should be shown or not,
-      // i.e., in our case, what should happen if the modal is open.
-      // Open the modal on toggling/clicking. See the toggle function in App.js
-      // below.
-      <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}> Todo Item </ModalHeader>
-        <ModalBody>
-          <Form>
-            <FormGroup>
-              <Label for="title">Title</Label>
-              <Input
-                type="text"
-                name="title"
-                value={this.state.activeItem.title}
-                // "this" refers to the current event. If there is a change,
-                // it will be passed to the handleChange function above.
-                onChange={this.handleChange}
-                placeholder="Enter Todo Title"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="description">Description</Label>
-              <Input
-                type="text"
-                name="description"
-                value={this.state.activeItem.description}
-                onChange={this.handleChange}
-                placeholder="Enter Todo description"
-              />
-            </FormGroup>
-           
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={() => onSave(this.state.activeItem)}>
-            Save
-          </Button>
-        </ModalFooter>
-      </Modal>
-    );
+
+  render() {
+    return(
+    <div>
+      Songs
+      <ul>
+        {this.renderSongs()}
+      </ul>
+        {this.state.active ? <b>Edit </b> : ""}
+        {this.state.active ? this.state.songList[this.state.currentSong].song + " by " + this.state.songList[this.state.currentSong].artist : ""}
+    </div>)
   }
 }
