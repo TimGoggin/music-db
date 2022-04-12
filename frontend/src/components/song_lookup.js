@@ -76,6 +76,16 @@ export default class Song_lookup extends React.Component {
       .catch((err) => console.log(err));
   }
 
+  editBar() {
+    let editHtml = this.state.active ? (
+      <div>
+        <b>Edit </b>
+        {this.state.songList[this.state.currentSong].song + " by " + this.state.songList[this.state.currentSong].artist}
+      </div>
+    ) : "";
+    return editHtml
+  }
+
   refreshList = () => {
     // We are using the axios library for making HTTP requests.
     // Here is a GET request to our api/todos path.
@@ -99,8 +109,7 @@ export default class Song_lookup extends React.Component {
       <ul>
         {this.renderSongs()}
       </ul>
-        {this.state.active ? <b>Edit </b> : ""}
-        {this.state.active ? this.state.songList[this.state.currentSong].song + " by " + this.state.songList[this.state.currentSong].artist : ""}
+        {this.editBar()}
     </div>)
   }
 }
