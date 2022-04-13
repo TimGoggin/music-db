@@ -27,7 +27,6 @@ export default class Song_lookup extends React.Component {
       userList: [],
       currentSong: 0,
       currentUser: "",
-      currentRating: 0,
       loginSupText: "",
       editSupText: "",
       active: 0,
@@ -48,14 +47,14 @@ export default class Song_lookup extends React.Component {
   loginBar() {
     return <Login username={this.state.currentUser} onChange={this.changeCurrentUser} supText={this.state.loginSupText}/>
   }
-  changeEditMode(id, on) {
+  changeEditMode(id) {
     if(this.state.currentUser === "") {
       this.setState({active: 0, editSupText: "Must be logged in!"})
       return
     }
-    if(on) {
+    if(!(this.state.active == 1 && this.state.currentSong == id)) {
       let newRat = this.findUserRatingOfSong(this.state.currentUser, id).rating
-      this.setState({currentSong: id, active: 1, editSupText: "", currentRating: newRat})
+      this.setState({currentSong: id, active: 1, editSupText: ""})
       this.setState({formText: {song: this.state.songList[id].song, artist: this.state.songList[id].artist, rating: newRat}})
     }
     else {
@@ -63,27 +62,39 @@ export default class Song_lookup extends React.Component {
     }
   }
 
-  async addOrUpdate(dest, newData) {
+  async addOrUpdate(dest, exact, newData) {
     await axios
-      .get(dest)
+      .get(dest.concat(exact))
       .then((res) => {
         axios
-          .patch(dest + '/', newData)
+          .patch(dest.concat(exact) + '/', newData)
           .then((res) => {
             this.refreshList()
             this.setState({active: 0})
           })
       })
+      .catch((res) => {
+        axios
+          .post(dest, newData)
+          .then((res) => {
+            this.refreshList()
+            this.setState({active: 0})
+        })
+      })
   }
 
   editSongRating = () => {
+    if(this.state.formText.song === "" || this.state.formText.artist === "" || this.state.formText.rating === "" ) {
+      this.setState({editSupText: "All fields must be filled in!"})
+      return
+    }
+    this.setState({editSupText: ""})
     let dest = "http://localhost:8000/api/artists/"
-    dest = dest.concat(this.state.currentSong)
-    this.addOrUpdate(dest, {song: this.state.formText.song, artist: this.state.formText.artist })
+    this.addOrUpdate(dest, this.state.currentSong, {song: this.state.formText.song, artist: this.state.formText.artist })
     dest = "http://localhost:8000/api/ratings/"
-    dest = dest.concat(this.findUserRatingOfSong(this.state.currentUser, this.state.currentSong).id)
-    this.addOrUpdate(dest, {rating: this.state.formText.rating})
+    this.addOrUpdate(dest, this.findUserRatingOfSong(this.state.currentUser, this.state.currentSong).id, {rating: this.state.formText.rating, song: this.state.currentSong, username: this.state.currentUser})
   }
+
 
   changeCurrentUser(username, password, signup) {
     this.setState({active: 0})
@@ -116,6 +127,58 @@ export default class Song_lookup extends React.Component {
       })
   }
 
+  deleteSong = () => {
+    let dest = "http://localhost:8000/api/artists/"
+    dest = dest.concat(this.state.currentSong)
+    axios
+      .delete(dest)
+      .then((res) => {
+        this.setState({active: 0})
+        this.refreshList()
+      })
+  }
+
+  addSongActivate = () => {
+    if (this.state.currentUser === "") {
+      this.setState({editSupText: "Must be logged in!"})
+      return
+    }
+    if ((this.state.active==2)) {
+      this.setState({active: 0})
+    }
+    else {
+      this.setState({active: 2})
+    }
+    this.setState({formText: {song: "", artist: "", rating: ""}, editSupText: ""})
+  }
+
+  checkDupSongs(name, artistName) {
+    if (name === "" || artistName === "") {
+      return true
+    }
+    for (const[key, value] of Object.entries(this.state.songList)) {
+      if (value.song === name && value.artist == artistName) {
+        return true
+      }
+    }
+    return false
+  }
+
+  addSong = () => {
+    if (this.checkDupSongs(this.state.formText.song, this.state.formText.artist)) {
+      this.setState({editSupText: "Invalid submission or song already exists!"})
+      return
+    }
+    let dest = "http://localhost:8000/api/artists/"
+    this.setState({editSupText: ""})
+    axios
+      .post(dest, {song: this.state.formText.song, artist: this.state.formText.artist})
+      .then((res) => {
+        this.refreshList()
+        this.setState({active: 0})
+      })
+  }
+
   renderSongs() {
     return Object.entries(this.state.songList).map(([key, value]) =>
       <Song id={key} song={value.song} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
@@ -123,7 +186,7 @@ export default class Song_lookup extends React.Component {
   }
 
   findUserRatingOfSong(user, songid) {
-    let returnRat = 0
+    let returnRat = {id: 0, rating: 0}
     this.state.ratingList.map((rating) => {
       if (user == rating.username && songid == rating.song) {
         returnRat = rating
@@ -226,7 +289,42 @@ export default class Song_lookup extends React.Component {
                 />
             </FormGroup>
           </Form>
-          <Button onClick={this.editSongRating}>
+          <Button onClick={this.editSongRating} style={{marginRight: "1vw"}}>
+              Submit
+          </Button>
+          <Button onClick={this.deleteSong}>
+              Delete
+          </Button>
+          </div>
+      );
+    }
+    else if (this.state.active == 2) {
+      editHtml = (
+        <div className="editBar">
+          <b>Add Song </b>
+        <Form>
+            <FormGroup>
+              <Label for="song">Title </Label>
+              <Input
+                type="text"
+                name="song"
+                value={this.state.formText.song}
+                onChange={this.handleChange}
+                placeholder=""
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="artist">Artist </Label>
+              <Input
+                type="text"
+                name="artist"
+                value={this.state.formText.artist}
+                onChange={this.handleChange}
+                placeholder=""
+              />
+            </FormGroup>
+          </Form>
+          <Button onClick={this.addSong}>
               Submit
           </Button>
           </div>
@@ -248,6 +346,9 @@ export default class Song_lookup extends React.Component {
             <ul style={{listStyle: "none"}}>
               {this.renderSongs()}
             </ul>
+            <Button onClick={this.addSongActivate}>
+              Add Song
+            </Button>
           </div>
           <div>
             {this.editBar()}

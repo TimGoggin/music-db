@@ -77,8 +77,8 @@ export default class Login extends React.Component {
     else {
       return (
         <div>
-          Welcome, {this.props.username} 
-          <Button onClick={() => this.edit("", "", false)}>
+          Welcome, {this.props.username}
+          <Button onClick={() => this.edit("", "", false)} style={{marginLeft: "0.5vw"}}>
               Logout
           </Button>
         </div>

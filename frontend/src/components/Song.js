@@ -19,16 +19,11 @@ export default class Song extends React.Component {
     super(props);
   }
 
-  edit() {
-    let fun = () => this.props.onChange(this.props.id, true)
-    fun()
-  }
-
   render() {
     return(
     <li>
       <span>{this.props.song} by {this.props.artist} is rated {this.props.average} ({this.props.count}) </span>
-      <button onClick={() => this.props.onChange(this.props.id, true)}>
+      <button onClick={() => this.props.onChange(this.props.id)}>
                   Edit
       </button>
     </li>)
