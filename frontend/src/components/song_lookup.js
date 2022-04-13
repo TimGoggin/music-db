@@ -14,6 +14,7 @@ import {
 
 import axios from "axios"
 import Song from "./Song"
+import Login from "./Login"
 import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers";
 
 export default class Song_lookup extends React.Component {
@@ -22,30 +23,87 @@ export default class Song_lookup extends React.Component {
     this.state = {
       songList : [],
       ratingList: [],
+      userList: [],
       currentSong: 0,
-      currentUser: null,
-      active: false
+      currentUser: "",
+      currentRating: 0,
+      loginSupText: "",
+      editSupText: "",
+      active: 0,
+      formText: {
+        song: "",
+        artist: "",
+        rating: ""
+      }
     };
     this.changeEditMode = this.changeEditMode.bind(this)
+    this.changeCurrentUser = this.changeCurrentUser.bind(this)
   }
 
   componentDidMount() {
     this.refreshList();
   }
 
+  loginBar() {
+    return <Login username={this.state.currentUser} onChange={this.changeCurrentUser} supText={this.state.loginSupText}/>
+  }
   changeEditMode(id, on) {
+    if(this.state.currentUser === "") {
+      this.setState({active: 0, editSupText: "Must be logged in!"})
+      return
+    }
     if(on) {
-      this.setState({currentSong: id, active: true})
+      let newRat = this.findUserRatingOfSong(this.state.currentUser, id)
+      this.setState({currentSong: id, active: 1, editSupText: "", currentRating: newRat})
+      this.setState({formText: {song: this.state.songList[id].song, artist: this.state.songList[id].artist, rating: newRat}})
     }
     else {
-      this.setState({active: false})
+      this.setState({active: 0})
     }
+  }
+
+  changeCurrentUser(username, password) {
+    let dest = "http://localhost:8000/api/users/"
+    if (username === "") {
+      this.setState({currentUser: "", loginSupText: ""})
+      return
+    }
+    axios
+      .get(dest.concat(username))
+      .then((res) => {
+        if(res.data.password === password) {
+          this.setState({currentUser: username, loginSupText: ""})
+        }
+        else {
+          this.setState({currentUser: "", loginSupText: "Invalid credentials"})
+        }
+      })
+      .catch((res) => {
+        this.setState({currentUser: "", loginSupText: "Invalid credentials"})
+      })
   }
 
   renderSongs() {
     return Object.entries(this.state.songList).map(([key, value]) =>
       <Song id={key} song={value.song} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
     )
+  }
+
+  findUserRatingOfSong(user, songid) {
+    let returnRat = 0
+    this.state.ratingList.map((rating) => {
+      if (user == rating.username && songid == rating.song) {
+        returnRat = rating.rating
+      }
+    })
+    return returnRat
+  }
+
+  handleChange = (event) => {
+    let {name, value} = event.target
+    this.setState({
+        formText: {[name]: value}
+    });
   }
 
   calculateAverageRating = (u) => {
@@ -76,16 +134,6 @@ export default class Song_lookup extends React.Component {
       .catch((err) => console.log(err));
   }
 
-  editBar() {
-    let editHtml = this.state.active ? (
-      <div>
-        <b>Edit </b>
-        {this.state.songList[this.state.currentSong].song + " by " + this.state.songList[this.state.currentSong].artist}
-      </div>
-    ) : "";
-    return editHtml
-  }
-
   refreshList = () => {
     // We are using the axios library for making HTTP requests.
     // Here is a GET request to our api/todos path.
@@ -102,14 +150,70 @@ export default class Song_lookup extends React.Component {
       })
   };
 
+  editBar() {
+    let editHtml = ""
+    if (this.state.active == 1){
+      editHtml = (
+        <div>
+          <b>Edit Song/Rating </b>
+        <Form>
+            <FormGroup>
+              <Label for="title">Title</Label>
+              <Input
+                type="text"
+                name="title"
+                value={this.state.formText.song}
+                // "this" refers to the current event. If there is a change,
+                // it will be passed to the handleChange function above.
+                onChange={this.handleChange}
+                placeholder="Change Song Name"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="artist">Artist</Label>
+              <Input
+                type="text"
+                name="artist"
+                value={this.state.formText.artist}
+                onChange={this.handleChange}
+                placeholder="Change Artist"
+              />
+            </FormGroup>
+            <FormGroup rating>
+              <Label for="rating">
+                <Input
+                  type="number"
+                  name="rating"
+                  value={this.state.formText.rating}
+                  onChange={this.handleChange}
+                  placeholder="Change Rating"
+                />
+              </Label>
+            </FormGroup>
+          </Form>
+          <Button onClick={() => {}}>
+              Submit (non-functional ATM)
+          </Button>
+          </div>
+      );
+    }
+    return editHtml
+  }
+
   render() {
     return(
     <div>
-      Songs
-      <ul>
-        {this.renderSongs()}
-      </ul>
+      <div style={{textAlign: "right"}}>
+        {this.loginBar()}
+      </div>
+      <div>
+        Songs
+        <ul>
+          {this.renderSongs()}
+        </ul>
         {this.editBar()}
-    </div>)
-  }
+        <div style={{color: "red"}}>{this.state.editSupText}</div>
+      </div>
+    </div>
+    );}
 }
