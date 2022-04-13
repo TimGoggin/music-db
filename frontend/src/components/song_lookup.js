@@ -54,7 +54,7 @@ export default class Song_lookup extends React.Component {
       return
     }
     if(on) {
-      let newRat = this.findUserRatingOfSong(this.state.currentUser, id)
+      let newRat = this.findUserRatingOfSong(this.state.currentUser, id).rating
       this.setState({currentSong: id, active: 1, editSupText: "", currentRating: newRat})
       this.setState({formText: {song: this.state.songList[id].song, artist: this.state.songList[id].artist, rating: newRat}})
     }
@@ -63,17 +63,26 @@ export default class Song_lookup extends React.Component {
     }
   }
 
+  async addOrUpdate(dest, newData) {
+    await axios
+      .get(dest)
+      .then((res) => {
+        axios
+          .patch(dest + '/', newData)
+          .then((res) => {
+            this.refreshList()
+            this.setState({active: 0})
+          })
+      })
+  }
+
   editSongRating = () => {
     let dest = "http://localhost:8000/api/artists/"
     dest = dest.concat(this.state.currentSong)
-    axios
-      .get(dest)
-      .then((res) => {
-        console.log(res.data)
-        axios
-          .put("http://localhost:8000/api/artists/", {id: this.state.currentSong, song: this.state.formText.song, artist: this.state.formText.artist })
-          .then((res) => {console.log(res.data)})
-      })
+    this.addOrUpdate(dest, {song: this.state.formText.song, artist: this.state.formText.artist })
+    dest = "http://localhost:8000/api/ratings/"
+    dest = dest.concat(this.findUserRatingOfSong(this.state.currentUser, this.state.currentSong).id)
+    this.addOrUpdate(dest, {rating: this.state.formText.rating})
   }
 
   changeCurrentUser(username, password, signup) {
@@ -117,7 +126,7 @@ export default class Song_lookup extends React.Component {
     let returnRat = 0
     this.state.ratingList.map((rating) => {
       if (user == rating.username && songid == rating.song) {
-        returnRat = rating.rating
+        returnRat = rating
       }
     })
     return returnRat
@@ -125,8 +134,10 @@ export default class Song_lookup extends React.Component {
 
   handleChange = (event) => {
     let {name, value} = event.target
+    let newForm = this.state.formText
+    newForm[name] = value
     this.setState({
-        formText: {[name]: value}
+        formText: newForm
     });
   }
 
@@ -139,7 +150,10 @@ export default class Song_lookup extends React.Component {
         average += rating.rating
       }
     })
-    return [average/count, count]
+    if (count == 0) {
+      return [0,0]
+    }
+    return [Number.parseFloat(average/count).toFixed(2), count]
   }
 
   populateSongs = (artists) => {
@@ -182,13 +196,11 @@ export default class Song_lookup extends React.Component {
           <b>Edit Song/Rating </b>
         <Form>
             <FormGroup>
-              <Label for="title">Title </Label>
+              <Label for="song">Title </Label>
               <Input
                 type="text"
-                name="title"
+                name="song"
                 value={this.state.formText.song}
-                // "this" refers to the current event. If there is a change,
-                // it will be passed to the handleChange function above.
                 onChange={this.handleChange}
                 placeholder="Change Song Name"
               />
