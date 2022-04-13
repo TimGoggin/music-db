@@ -3,13 +3,17 @@ import './App.css';
 
 import React from 'react';
 import Song_lookup from './components/song_lookup';
-import Play from './components/play.js';
+import Dubstep from './components/dubstep';
+import Epic from './components/Epic';
+import Sunny from './components/Sunny';
 
 function App() {
   return (
     <div className="App">
       <Song_lookup />
-      < Play />
+      < Dubstep />
+      <Epic />
+      <Sunny/>
     </div>
   );
 

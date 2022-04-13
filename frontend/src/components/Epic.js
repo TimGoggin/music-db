@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
 // Import your audio file
-import song from "./bensound-dubstep.mp3";
+import song from "./bensound-epic.mp3";
 
-class Dubstep extends Component {
+class Epic extends Component {
   // Create state
   state = {
 
@@ -39,8 +39,8 @@ class Dubstep extends Component {
         {/* Show state of song on website */}
         <p>
           {this.state.isPlaying ? 
-            "Song is Playing" : 
-            "Song is Paused"}
+            "Epic is Playing" : 
+            "Epic is Paused"}
         </p>
 
         {/* Button to call our main function */}
@@ -52,4 +52,4 @@ class Dubstep extends Component {
   }
 }
 
-export default Dubstep;
+export default Epic;

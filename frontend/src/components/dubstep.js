@@ -39,8 +39,8 @@ class Dubstep extends Component {
         {/* Show state of song on website */}
         <p>
           {this.state.isPlaying ? 
-            "Song is Playing" : 
-            "Song is Paused"}
+            "Dubstep is Playing" : 
+            "Dubstep is Paused"}
         </p>
 
         {/* Button to call our main function */}
