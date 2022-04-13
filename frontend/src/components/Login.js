@@ -23,8 +23,8 @@ export default class Login extends React.Component {
     };
   }
 
-  edit(u, p) {
-    let fun = () => this.props.onChange(u, p)
+  edit(u, p, b) {
+    let fun = () => this.props.onChange(u, p, b)
     fun()
     this.setState({username: "", password: ""})
   }
@@ -52,7 +52,7 @@ export default class Login extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Username"
                 />
-                <Label for="password">Password </Label>
+                <Label for="password"> Password </Label>
                 <Input
                   type="text"
                   name="password"
@@ -64,10 +64,13 @@ export default class Login extends React.Component {
                 />
               </FormGroup>
             </Form>
-            <span style={{color: "red"}} key={this.props.supText}>{this.props.supText} </span>
-            <Button onClick={() => this.edit(this.state.username, this.state.password)}>
+            <Button onClick={() => this.edit(this.state.username, this.state.password, false)} style={{marginRight: "0.5vw"}}>
               Login
             </Button>
+            <Button onClick={() => this.edit(this.state.username, this.state.password, true)}>
+              Sign Up
+            </Button>
+            <div style={{color: "red"}} key={this.props.supText}>{this.props.supText} </div>
         </div>
       )
     }
@@ -75,7 +78,7 @@ export default class Login extends React.Component {
       return (
         <div>
           Welcome, {this.props.username} 
-          <Button onClick={() => this.edit("", "")}>
+          <Button onClick={() => this.edit("", "", false)}>
               Logout
           </Button>
         </div>

@@ -15,6 +15,7 @@ import {
 import axios from "axios"
 import Song from "./Song"
 import Login from "./Login"
+import './s_lookup.css';
 import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers";
 
 export default class Song_lookup extends React.Component {
@@ -62,7 +63,21 @@ export default class Song_lookup extends React.Component {
     }
   }
 
-  changeCurrentUser(username, password) {
+  editSongRating = () => {
+    let dest = "http://localhost:8000/api/artists/"
+    dest = dest.concat(this.state.currentSong)
+    axios
+      .get(dest)
+      .then((res) => {
+        console.log(res.data)
+        axios
+          .put("http://localhost:8000/api/artists/", {id: this.state.currentSong, song: this.state.formText.song, artist: this.state.formText.artist })
+          .then((res) => {console.log(res.data)})
+      })
+  }
+
+  changeCurrentUser(username, password, signup) {
+    this.setState({active: 0})
     let dest = "http://localhost:8000/api/users/"
     if (username === "") {
       this.setState({currentUser: "", loginSupText: ""})
@@ -75,11 +90,20 @@ export default class Song_lookup extends React.Component {
           this.setState({currentUser: username, loginSupText: ""})
         }
         else {
-          this.setState({currentUser: "", loginSupText: "Invalid credentials"})
+          this.setState({currentUser: "", loginSupText: (signup ? "Username already taken!" : "Invalid credentials")})
         }
       })
       .catch((res) => {
-        this.setState({currentUser: "", loginSupText: "Invalid credentials"})
+        if(signup) {
+          axios
+            .post("http://localhost:8000/api/users/", {username: username, password: password})
+            .then((res) => {
+              this.changeCurrentUser(username, password, false)
+            })
+        }
+        else {
+          this.setState({currentUser: "", loginSupText: "Invalid credentials"})
+        }
       })
   }
 
@@ -154,11 +178,11 @@ export default class Song_lookup extends React.Component {
     let editHtml = ""
     if (this.state.active == 1){
       editHtml = (
-        <div>
+        <div className="editBar">
           <b>Edit Song/Rating </b>
         <Form>
             <FormGroup>
-              <Label for="title">Title</Label>
+              <Label for="title">Title </Label>
               <Input
                 type="text"
                 name="title"
@@ -170,7 +194,7 @@ export default class Song_lookup extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="artist">Artist</Label>
+              <Label for="artist">Artist </Label>
               <Input
                 type="text"
                 name="artist"
@@ -179,8 +203,8 @@ export default class Song_lookup extends React.Component {
                 placeholder="Change Artist"
               />
             </FormGroup>
-            <FormGroup rating>
-              <Label for="rating">
+            <FormGroup>
+              <Label for="rating">Rating </Label>
                 <Input
                   type="number"
                   name="rating"
@@ -188,11 +212,10 @@ export default class Song_lookup extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Change Rating"
                 />
-              </Label>
             </FormGroup>
           </Form>
-          <Button onClick={() => {}}>
-              Submit (non-functional ATM)
+          <Button onClick={this.editSongRating}>
+              Submit
           </Button>
           </div>
       );
@@ -203,16 +226,22 @@ export default class Song_lookup extends React.Component {
   render() {
     return(
     <div>
-      <div style={{textAlign: "right"}}>
+      <div style={{textAlign: "right", position: "fixed", right: 0, top: 0}}>
         {this.loginBar()}
       </div>
-      <div>
+      <div style={{marginTop: 50}}>
         Songs
-        <ul>
-          {this.renderSongs()}
-        </ul>
-        {this.editBar()}
-        <div style={{color: "red"}}>{this.state.editSupText}</div>
+        <div className="flex-container">
+          <div>
+            <ul style={{listStyle: "none"}}>
+              {this.renderSongs()}
+            </ul>
+          </div>
+          <div>
+            {this.editBar()}
+            <div style={{color: "red"}}>{this.state.editSupText}</div>
+          </div>
+        </div>
       </div>
     </div>
     );}
