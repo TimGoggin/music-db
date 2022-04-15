@@ -21,9 +21,9 @@ export default class Song extends React.Component {
 
   render() {
     return(
-    <li>
+    <li style={{justifyContent: "flex-start"}}>
       <span>{this.props.song} by {this.props.artist} is rated {this.props.average} ({this.props.count}) </span>
-      <button onClick={() => this.props.onChange(this.props.id)}>
+      <button style={{justifyContent: "flex-end"}} onClick={() => this.props.onChange(this.props.id)}>
                   Edit
       </button>
     </li>)

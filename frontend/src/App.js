@@ -10,13 +10,12 @@ import Sunny from './components/Sunny';
 function App() {
   return (
     <div className="App">
-      <Song_lookup />
-      < Dubstep />
-      <Epic />
+      <Song_lookup/>
+      <Dubstep/>
+      <Epic/>
       <Sunny/>
     </div>
   );
-
 }
 
 

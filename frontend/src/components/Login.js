@@ -52,6 +52,7 @@ export default class Login extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Username"
                 />
+                <br></br>
                 <Label for="password"> Password </Label>
                 <Input
                   type="text"

@@ -289,9 +289,11 @@ export default class Song_lookup extends React.Component {
                 />
             </FormGroup>
           </Form>
-          <Button onClick={this.editSongRating} style={{marginRight: "1vw"}}>
-              Submit
-          </Button>
+          <div className="Button">
+            <Button onClick={this.editSongRating}>
+                Submit
+            </Button>
+          </div>
           <Button onClick={this.deleteSong}>
               Delete
           </Button>
@@ -335,18 +337,19 @@ export default class Song_lookup extends React.Component {
 
   render() {
     return(
-    <div>
-      <div style={{textAlign: "right", position: "fixed", right: 0, top: 0}}>
+    <div style={{paddingTop: 30}}>
+      <h1>Insert Song Rating Site Name Here!</h1>
+      <div style={{textAlign: "center", justifyContent: "center"}}>
         {this.loginBar()}
       </div>
-      <div style={{marginTop: 50}}>
-        Songs
+      <div style={{marginTop: 30}}>
+        <h2>Songs</h2>
         <div className="flex-container">
           <div>
             <ul style={{listStyle: "none"}}>
               {this.renderSongs()}
             </ul>
-            <Button onClick={this.addSongActivate}>
+            <Button style={{justifyContent: "center"}} onClick={this.addSongActivate}>
               Add Song
             </Button>
           </div>
